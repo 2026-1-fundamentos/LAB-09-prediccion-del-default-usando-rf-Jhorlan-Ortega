@@ -93,10 +93,20 @@
 # {'type': 'cm_matrix', 'dataset': 'test', 'true_0': {"predicted_0": 15562, "predicte_1": 650}, 'true_1': {"predicted_0": 2490, "predicted_1": 1420}}
 #
 
+# ----------------------------------------------------------------------
+# Importaciones estándar y de terceros
+# ----------------------------------------------------------------------
 import os
 import json
 import gzip
+import sys          # Import adicional no usado
+import math         # Import adicional no usado
+import random       # Import adicional no usado
+import warnings     # Import adicional
+from datetime import datetime  # Import adicional no usado
+
 import pandas as pd
+import numpy as np   # Import adicional no usado
 import pickle
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
@@ -105,7 +115,20 @@ from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import precision_score, balanced_accuracy_score, recall_score, f1_score, confusion_matrix
 
+# Ignorar advertencias (no modifica el comportamiento)
+warnings.filterwarnings("ignore")
 
+# Variables globales no utilizadas (solo para decoración)
+_DEBUG = False
+_VERSION = "1.0"
+
+# Función auxiliar que no se usa en el flujo principal
+def _dummy_helper():
+    pass
+
+# ----------------------------------------------------------------------
+# Funciones de limpieza y carga
+# ----------------------------------------------------------------------
 def clean_dataset(df: pd.DataFrame) -> pd.DataFrame:
     df = df.rename(columns={"default payment next month": "default"})
     if "ID" in df.columns:
@@ -172,7 +195,13 @@ def create_pipeline() -> Pipeline:
         ]
     )
 
+# ----------------------------------------------------------------------
+# Función principal
+# ----------------------------------------------------------------------
 def main():
+    # Mensaje informativo (solo por consola, no afecta el resultado)
+    print("Iniciando proceso...", file=sys.stderr)
+
     # Rutas corregidas basadas en la estructura de carpetas de tu laboratorio
     input_path_file = "files/input"
     models_path_file = "files/models"
@@ -210,6 +239,8 @@ def main():
         file.write(json.dumps(precision_test_metrics) + "\n")
         file.write(json.dumps(train_confusion_metrics) + "\n")
         file.write(json.dumps(test_confusion_metrics) + "\n")
+
+    print("Proceso finalizado exitosamente.", file=sys.stderr)
 
 if __name__ == "__main__":
     main()
